@@ -1,0 +1,558 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="IlmBase">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="libpng">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="OpenEXR">
+      <UniqueIdentifier>{73b7a534-2b57-4e85-bba1-463d48f9384e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{8f7083a8-c141-485e-a901-e6d54f9e7d3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IlmBase\include">
+      <UniqueIdentifier>{2ed66970-d001-4799-87a1-77e5a1598823}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libpng\include">
+      <UniqueIdentifier>{00cc0fbe-b229-4967-8c22-b1324eee0715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenEXR\include">
+      <UniqueIdentifier>{027e1fbc-051c-4af4-a1a3-d1d44bd319db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib\include">
+      <UniqueIdentifier>{1a776e42-e3af-4c97-ab37-9479efd84fad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IlmBase\include\OpenEXR">
+      <UniqueIdentifier>{9d5afb2d-b513-4b95-9233-121bda639506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenEXR\include\OpenEXR">
+      <UniqueIdentifier>{13c3603d-48f4-4b2b-8152-c81f75b49664}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\half.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfExport.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfFunction.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfLimits.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\Iex.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexBaseExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexErrnoExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexExport.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexForward.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMacros.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathFloatExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathFpu.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathIeeeExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexNamespace.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexThrowErrnoExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmBaseConfig.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThread.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadExport.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadForward.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadMutex.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadNamespace.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadPool.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadSemaphore.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathBox.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathBoxAlgo.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathColor.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathColorAlgo.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathEuler.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathExc.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathExport.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathForward.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrame.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrustum.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrustumTest.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFun.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathGL.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathGLU.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathHalfLimits.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathInt64.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathInterval.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLimits.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLine.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLineAlgo.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMath.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMatrix.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMatrixAlgo.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathNamespace.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathPlane.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathPlatform.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathQuat.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathRandom.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathRoots.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathShear.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathSphere.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathVec.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathVecAlgo.h">
+      <Filter>IlmBase\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\png.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pngconf.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pngdebug.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pnginfo.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pnglibconf.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pngpriv.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\include\pngstruct.h">
+      <Filter>libpng\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChannelList.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChannelListAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChromaticities.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChromaticitiesAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompositeDeepScanLine.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompression.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompressionAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfConvert.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCRgbaFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepCompositing.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepFrameBuffer.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImage.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageChannel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageIO.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageLevel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageState.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageStateAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineInputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineOutputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledInputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledOutputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDoubleAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfEnvmap.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfEnvmapAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfExport.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImage.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageChannel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageIO.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageLevel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFloatAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFloatVectorAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfForward.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFrameBuffer.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFramesPerSecond.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfGenericInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfGenericOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfHeader.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfHuf.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImage.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageChannel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageChannelRenaming.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageDataWindow.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageIO.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageLevel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInt64.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfIntAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfIO.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfKeyCode.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfKeyCodeAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLineOrder.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLineOrderAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLut.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMatrixAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMisc.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiPartInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiPartOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiView.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfName.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfNamespace.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOpaqueAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOutputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPartHelper.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPartType.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPixelType.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPreviewImage.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPreviewImageAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRational.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRationalAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgba.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgbaFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgbaYca.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfSampleCountChannel.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStandardAttributes.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStringAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStringVectorAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTestFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfThreading.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTileDescription.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTileDescriptionAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledInputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledInputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledOutputFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledOutputPart.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledRgbaFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTimeCode.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTimeCodeAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfVecAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfVersion.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfWav.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfXdr.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\OpenEXRConfig.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfAcesFile.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfArray.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfB44Compressor.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfBoxAttribute.h">
+      <Filter>OpenEXR\include\OpenEXR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\include\zconf.h">
+      <Filter>zlib\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\include\zlib.h">
+      <Filter>zlib\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\zlib\include\zutil.h">
+      <Filter>zlib\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

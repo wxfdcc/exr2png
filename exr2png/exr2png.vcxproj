@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B04ADC10-94B0-474A-8902-A61553BE0EAF}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>exr2png</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Half.lib;Iex-2_2.lib;IexMath-2_2.lib;IlmThread-2_2.lib;Imath-2_2.lib;libpng16.lib;IlmImfd-2_2.lib;IlmImfUtild-2_2.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\IlmBase\include\OpenEXR\half.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfExport.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfFunction.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\halfLimits.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\Iex.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexBaseExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexErrnoExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexExport.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexForward.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMacros.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathFloatExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathFpu.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexMathIeeeExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexNamespace.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IexThrowErrnoExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmBaseConfig.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThread.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadExport.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadForward.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadMutex.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadNamespace.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadPool.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\IlmThreadSemaphore.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathBox.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathBoxAlgo.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathColor.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathColorAlgo.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathEuler.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathExc.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathExport.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathForward.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrame.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrustum.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFrustumTest.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathFun.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathGL.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathGLU.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathHalfLimits.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathInt64.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathInterval.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLimits.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLine.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathLineAlgo.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMath.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMatrix.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathMatrixAlgo.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathNamespace.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathPlane.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathPlatform.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathQuat.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathRandom.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathRoots.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathShear.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathSphere.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathVec.h" />
+    <ClInclude Include="..\IlmBase\include\OpenEXR\ImathVecAlgo.h" />
+    <ClInclude Include="..\libpng\include\png.h" />
+    <ClInclude Include="..\libpng\include\pngconf.h" />
+    <ClInclude Include="..\libpng\include\pngdebug.h" />
+    <ClInclude Include="..\libpng\include\pnginfo.h" />
+    <ClInclude Include="..\libpng\include\pnglibconf.h" />
+    <ClInclude Include="..\libpng\include\pngpriv.h" />
+    <ClInclude Include="..\libpng\include\pngstruct.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfAcesFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfArray.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfB44Compressor.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfBoxAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChannelList.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChannelListAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChromaticities.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfChromaticitiesAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompositeDeepScanLine.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompression.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCompressionAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfConvert.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfCRgbaFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepCompositing.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepFrameBuffer.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImage.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageChannel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageIO.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageLevel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageState.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepImageStateAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineInputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepScanLineOutputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledInputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDeepTiledOutputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfDoubleAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfEnvmap.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfEnvmapAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfExport.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImage.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageChannel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageIO.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFlatImageLevel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFloatAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFloatVectorAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfForward.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFrameBuffer.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfFramesPerSecond.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfGenericInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfGenericOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfHeader.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfHuf.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImage.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageChannel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageChannelRenaming.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageDataWindow.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageIO.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfImageLevel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfInt64.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfIntAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfIO.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfKeyCode.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfKeyCodeAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLineOrder.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLineOrderAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfLut.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMatrixAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMisc.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiPartInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiPartOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfMultiView.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfName.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfNamespace.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOpaqueAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfOutputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPartHelper.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPartType.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPixelType.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPreviewImage.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfPreviewImageAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRational.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRationalAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgba.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgbaFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfRgbaYca.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfSampleCountChannel.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStandardAttributes.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStringAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfStringVectorAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTestFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfThreading.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTileDescription.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTileDescriptionAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledInputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledInputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledOutputFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledOutputPart.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTiledRgbaFile.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTimeCode.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfTimeCodeAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfVecAttribute.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfVersion.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfWav.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfXdr.h" />
+    <ClInclude Include="..\OpenEXR\include\OpenEXR\OpenEXRConfig.h" />
+    <ClInclude Include="..\zlib\include\zconf.h" />
+    <ClInclude Include="..\zlib\include\zlib.h" />
+    <ClInclude Include="..\zlib\include\zutil.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
