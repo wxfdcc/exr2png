@@ -129,28 +129,34 @@ int main(int argc, char** argv) {
     }
     outfilename += ".png";
   }
+
   Imf::Array2D<Imf::Rgba> pixels;
   int w, h;
   if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
+	std::cerr << "Error: can't read '" << infilename << "' file." << std::endl;
 	return RESULT_ERROR;
   }
 
   auto del = [](png_structp p) { png_destroy_write_struct(&p, nullptr); };
   std::unique_ptr<png_struct, decltype(del)> pngWriter(png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr), del);
   if (!pngWriter) {
-    return RESULT_ERROR;
+	std::cerr << "Error: png_create_write_struct failed." << std::endl;
+	return RESULT_ERROR;
   }
   png_infop pngInfo = png_create_info_struct(pngWriter.get());
   if (!pngInfo) {
-    return RESULT_ERROR;
+	std::cerr << "Error: png_create_info_struct failed." << std::endl;
+	return RESULT_ERROR;
   }
 
   std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(outfilename.c_str(), "wb"), &fclose);
   if (!fp) {
-    return RESULT_ERROR;
+	std::cerr << "Error: can't open '" << outfilename << "' file." << std::endl;
+	return RESULT_ERROR;
   }
 
   if (setjmp(png_jmpbuf(pngWriter.get()))) {
+	std::cerr << "Error: png output failed." << std::endl;
     return RESULT_ERROR;
   }
   png_init_io(pngWriter.get(), fp.get());
