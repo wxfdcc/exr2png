@@ -53,10 +53,20 @@ Result ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, i
 /*** Print program usage.
 */
 void PrintUsage() {
-  std::cout << "exr2png.exe [infile] [outfile]" << std::endl;
+  std::cout << "exr2png.exe [-s scale] [infile] [outfile]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "  Convert to PNG image from OpenEXR image." << std::endl;
+  std::cout << "  The alpha component in PNG has the reciprocal of the color strength." << std::endl;
+  std::cout << "  To restore the color, divide RGB by alpha." << std::endl;
+  std::cout << std::endl;
+  std::cout << "  -s scale: The low dynamic range scale." << std::endl;
+  std::cout << "            0.5 maps the range of 0-0.5 to 0-255, 2.0 maps 0-2.0 to 0-255." << std::endl;
+  std::cout << "            Note that higher scale reduce the maximum brightness." << std::endl;
+  std::cout << "            If not passed this option, the default is 1.0." << std::endl;
   std::cout << "  infile  : OpenEXR image file." << std::endl;
   std::cout << "  outfile : PNG image file that converted from infile." << std::endl;
-  std::cout << "            If empty, use the infile that has replaced extension to '.png.'" << std::endl;
+  std::cout << "            If not passed this option, use the infile that has replaced" << std::endl;
+  std::cout << "            extension to '.png.'" << std::endl;
 }
 
 /** Convert half precision color format to uint8_t format.
@@ -72,30 +82,27 @@ uint8_t HalfToUint8(half n, float strength) {
 
 /** Convert to the png_byte color from the half precision RGBA color.
 
-  @param buf   The pointer to the png_byte color buffer.
-  @param rgba  The source of the half precision RGBA color. The element of A is ignored.
+  @param buf       The pointer to the png_byte color buffer.
+  @param rgba      The source of the half precision RGBA color. The element of A is ignored.
+  @param strength  The scale of the color strength. The default value is 1.0.
+                   If it is 0.5, the color is doubled. If it is 2.0, the color is halved.
 
   This function stores 4 byte(RGBA) to buf.
   buf should have large enough to store it.
   The element of A in PNG has the reciprocal of strength of the color.
 */
-void SetPixel(png_bytep buf, const Imf::Rgba& rgba) {
+void SetPixel(png_bytep buf, const Imf::Rgba& rgba, float strength) {
   uint8_t* p = static_cast<uint8_t*>(buf);
   half biggest = rgba.r;
   if (biggest < rgba.g) biggest = rgba.g;
   if (biggest < rgba.b) biggest = rgba.b;
-  if (biggest <= 1.0f) {
-    p[0] = HalfToUint8(rgba.r, 1.0f);
-    p[1] = HalfToUint8(rgba.g, 1.0f);
-    p[2] = HalfToUint8(rgba.b, 1.0f);
-    p[3] = 255;
-  } else {
-	const float strength = biggest;
-    p[0] = HalfToUint8(rgba.r, strength);
-    p[1] = HalfToUint8(rgba.g, strength);
-    p[2] = HalfToUint8(rgba.b, strength);
-    p[3] = std::max<uint8_t>(1, std::min<uint8_t>(255, static_cast<uint8_t>(255.0f / strength + 0.5f)));
+  if (biggest >= strength) {
+	strength *= biggest;
   }
+  p[0] = HalfToUint8(rgba.r, strength);
+  p[1] = HalfToUint8(rgba.g, strength);
+  p[2] = HalfToUint8(rgba.b, strength);
+  p[3] = std::max<uint8_t>(1, std::min<uint8_t>(255, static_cast<uint8_t>(255.0f / strength + 0.5f)));
 }
 
 /** The entry point.
@@ -109,7 +116,15 @@ void SetPixel(png_bytep buf, const Imf::Rgba& rgba) {
 int main(int argc, char** argv) {
   const char* infilename = nullptr;
   std::string outfilename;
+  float strengthScale = 1.0f;
   for (int i = 1; i < argc; ++i) {
+	if (argv[i][0] == '-') {
+	  if (argv[i][1] == 's' || argv[i][1] == 'S' && (argc >= i + 1)) {
+		strengthScale = atof(argv[i + 1]);
+		++i;
+	  }
+	  continue;
+	}
     if (!infilename) {
       infilename = argv[i];
     } else if (outfilename.empty()) {
@@ -166,7 +181,7 @@ int main(int argc, char** argv) {
   row.resize(4/*8bit RGBA*/ * w * sizeof(png_byte));
   for (int y = 0; y < h; ++y) {
     for (int x = 0; x < w; ++x) {
-      SetPixel(&row[x * 4], pixels[y][x]);
+      SetPixel(&row[x * 4], pixels[y][x], strengthScale);
     }
     png_write_row(pngWriter.get(), row.data());
   }
