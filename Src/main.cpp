@@ -1,4 +1,6 @@
 /** @file man.cpp
+
+  Convert OpenEXR image file to PNG image file.
 */
 #include <ImfRgbaFile.h>
 #include <ImfArray.h>
@@ -8,13 +10,30 @@
 #include <memory>
 #include <vector>
 
+/** The result of the conversion.
+*/
 enum Result {
-  RESULT_SUCCESS = 0,
-  RESULT_ERROR = 1,
+  RESULT_SUCCESS = 0, ///< conversion success.
+  RESULT_ERROR = 1, ///< conversion failure.
 };
 
-void ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, int* pWidth, int* pHeight) {
+/** Read OpenEXR image from file.
+
+  @param filename  OpenEXR file path.
+  @param pPixels   The pointer to storing OpenEXR image if it is not nullptr.
+  @param pWidth    The pointer to storing OpenEXR image width if it is not nullptr.
+  @param pHeight   The pointer to storing OpenEXR image height if it is not nullptr.
+
+  @retval RESULT_SUCCESS  Succeeded to read image file.
+  @retval RESULT_ERROR    Failed  to read image file.
+                          pPixels, pWidth, pHeight has invalid data, so shouldn't refer.
+                          The file is broken or isn't OpenEXR format, probably.
+*/
+Result ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, int* pWidth, int* pHeight) {
   Imf::RgbaInputFile file (filename);
+  if (!file.isComplete()) {
+	return RESULT_ERROR;
+  }
   Imath::Box2i dw = file.dataWindow();
 
   if (pWidth) {
@@ -28,15 +47,37 @@ void ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, int
     file.setFrameBuffer(&(*pPixels)[0][0] - dw.min.x - dw.min.y * *pWidth, 1, *pWidth);
     file.readPixels(dw.min.y, dw.max.y);
   }
+  return RESULT_SUCCESS;
 }
 
+/*** Print program usage.
+*/
 void PrintUsage() {
+  std::cout << "exr2png.exe [infile] [outfile]" << std::endl;
+  std::cout << "  infile  : OpenEXR image file." << std::endl;
+  std::cout << "  outfile : PNG image file that converted from infile." << std::endl;
 }
 
+/** Convert half precision color format to uint8_t format.
+
+  @param  n         The input of the half precision color.
+  @param  strength  The strength of the color that is biggest of the half color of RGB.
+
+  @return The uint8_t color that is converted from the half precision color.
+*/
 uint8_t HalfToUint8(half n, float strength) {
   return std::max<uint8_t>(0, std::min<uint8_t>(255, static_cast<uint8_t>((255.0f * n) / strength + 0.5f)));
 }
 
+/** Convert to the png_byte color from the half precision RGBA color.
+
+  @param buf   The pointer to the png_byte color buffer.
+  @param rgba  The source of the half precision RGBA color. The element of A is ignored.
+
+  This function stores 4 byte(RGBA) to buf.
+  buf should have large enough to store it.
+  The element of A in PNG has the reciprocal of strength of the color.
+*/
 void SetPixel(png_bytep buf, const Imf::Rgba& rgba) {
   uint8_t* p = static_cast<uint8_t*>(buf);
   half biggest = rgba.r;
@@ -56,6 +97,14 @@ void SetPixel(png_bytep buf, const Imf::Rgba& rgba) {
   }
 }
 
+/** The entry point.
+
+  @param argc  argument count.
+  @param argv  argument vector.
+
+  @retval RESULT_SUCCESS  the conversion is success.
+  @retval RESULT_ERROR    the conversion is failure.
+*/
 int main(int argc, char** argv) {
   const char* infilename = nullptr;
   std::string outfilename;
@@ -81,7 +130,9 @@ int main(int argc, char** argv) {
   }
   Imf::Array2D<Imf::Rgba> pixels;
   int w, h;
-  ReadRgbaExrFile(infilename, &pixels, &w, &h);
+  if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
+	return RESULT_ERROR;
+  }
 
   auto del = [](png_structp p) { png_destroy_write_struct(&p, nullptr); };
   std::unique_ptr<png_struct, decltype(del)> pngWriter(png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr), del);
