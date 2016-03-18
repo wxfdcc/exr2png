@@ -33,22 +33,26 @@ void ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, int
 void PrintUsage() {
 }
 
+uint8_t HalfToUint8(half n, float strength) {
+  return std::max<uint8_t>(0, std::min<uint8_t>(255, static_cast<uint8_t>((255.0f * n) / strength + 0.5f)));
+}
+
 void SetPixel(png_bytep buf, const Imf::Rgba& rgba) {
   uint8_t* p = static_cast<uint8_t*>(buf);
   half biggest = rgba.r;
   if (biggest < rgba.g) biggest = rgba.g;
   if (biggest < rgba.b) biggest = rgba.b;
-  if (biggest < 255.0f) {
-    p[0] = static_cast<uint8_t>(rgba.r);
-    p[1] = static_cast<uint8_t>(rgba.g);
-    p[2] = static_cast<uint8_t>(rgba.b);
+  if (biggest <= 1.0f) {
+    p[0] = HalfToUint8(rgba.r, 1.0f);
+    p[1] = HalfToUint8(rgba.g, 1.0f);
+    p[2] = HalfToUint8(rgba.b, 1.0f);
     p[3] = 255;
   } else {
-    const float strength = biggest / 255.0f;
-    p[0] = std::min<uint8_t>(255, static_cast<uint8_t>(rgba.r / strength));
-    p[1] = std::min<uint8_t>(255, static_cast<uint8_t>(rgba.g / strength));
-    p[2] = std::min<uint8_t>(255, static_cast<uint8_t>(rgba.b / strength));
-    p[3] = std::max<uint8_t>(1, static_cast<uint8_t>(255.0f / strength));
+	const float strength = biggest;
+    p[0] = HalfToUint8(rgba.r, strength);
+    p[1] = HalfToUint8(rgba.g, strength);
+    p[2] = HalfToUint8(rgba.b, strength);
+    p[3] = std::max<uint8_t>(1, std::min<uint8_t>(255, static_cast<uint8_t>(255.0f / strength + 0.5f)));
   }
 }
 
