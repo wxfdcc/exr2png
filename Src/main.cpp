@@ -56,6 +56,7 @@ void PrintUsage() {
   std::cout << "exr2png.exe [infile] [outfile]" << std::endl;
   std::cout << "  infile  : OpenEXR image file." << std::endl;
   std::cout << "  outfile : PNG image file that converted from infile." << std::endl;
+  std::cout << "            If empty, use the infile that has replaced extension to '.png.'" << std::endl;
 }
 
 /** Convert half precision color format to uint8_t format.
