@@ -30,24 +30,30 @@ enum Result {
                           The file is broken or isn't OpenEXR format, probably.
 */
 Result ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, int* pWidth, int* pHeight) {
-  Imf::RgbaInputFile file (filename);
-  if (!file.isComplete()) {
-	return RESULT_ERROR;
-  }
-  Imath::Box2i dw = file.dataWindow();
+  try {
+	Imf::RgbaInputFile file(filename);
+	if (!file.isComplete()) {
+	  return RESULT_ERROR;
+	}
+	Imath::Box2i dw = file.dataWindow();
 
-  if (pWidth) {
-    *pWidth  = dw.max.x - dw.min.x + 1;
+	if (pWidth) {
+	  *pWidth = dw.max.x - dw.min.x + 1;
+	}
+	if (pHeight) {
+	  *pHeight = dw.max.y - dw.min.y + 1;
+	}
+	if (pPixels) {
+	  pPixels->resizeErase(*pHeight, *pWidth);
+	  file.setFrameBuffer(&(*pPixels)[0][0] - dw.min.x - dw.min.y * *pWidth, 1, *pWidth);
+	  file.readPixels(dw.min.y, dw.max.y);
+	}
+	return RESULT_SUCCESS;
   }
-  if (pHeight) {
-    *pHeight = dw.max.y - dw.min.y + 1;
+  catch (std::exception& e) {
+	std::cout << "Error: " << e.what() << std::endl;
   }
-  if (pPixels) {
-    pPixels->resizeErase (*pHeight, *pWidth);
-    file.setFrameBuffer(&(*pPixels)[0][0] - dw.min.x - dw.min.y * *pWidth, 1, *pWidth);
-    file.readPixels(dw.min.y, dw.max.y);
-  }
-  return RESULT_SUCCESS;
+  return RESULT_ERROR;
 }
 
 /*** Print program usage.
@@ -148,7 +154,6 @@ int main(int argc, char** argv) {
   Imf::Array2D<Imf::Rgba> pixels;
   int w, h;
   if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
-	std::cerr << "Error: can't read '" << infilename << "' file." << std::endl;
 	return RESULT_ERROR;
   }
 
