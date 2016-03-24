@@ -2,6 +2,7 @@
 
   Convert OpenEXR image file to PNG image file.
 */
+#include "tga.h"
 #include <ImfRgbaFile.h>
 #include <ImfArray.h>
 #include <png.h>
@@ -15,6 +16,13 @@
 enum Result {
   RESULT_SUCCESS = 0, ///< conversion success.
   RESULT_ERROR = 1, ///< conversion failure.
+};
+
+/** The output file format.
+*/
+enum Format {
+  FORMAT_PNG, ///< Output PNG format.
+  FORMAT_TGA, ///< Output TGA format.
 };
 
 /** Read OpenEXR image from file.
@@ -69,6 +77,8 @@ void PrintUsage() {
   std::cout << "            0.5 maps the range of 0-0.5 to 0-255, 2.0 maps 0-2.0 to 0-255." << std::endl;
   std::cout << "            Note that higher scale reduce the maximum brightness." << std::endl;
   std::cout << "            If not passed this option, the default is 1.0." << std::endl;
+  std::cout << "  -f type : The output format type." << std::endl;
+  std::cout << "            'png' or 'tga' is accepted." << std::endl;
   std::cout << "  infile  : OpenEXR image file." << std::endl;
   std::cout << "  outfile : PNG image file that converted from infile." << std::endl;
   std::cout << "            If not passed this option, use the infile that has replaced" << std::endl;
@@ -123,10 +133,24 @@ int main(int argc, char** argv) {
   const char* infilename = nullptr;
   std::string outfilename;
   float strengthScale = 1.0f;
+  Format outputFormat = FORMAT_PNG;
   for (int i = 1; i < argc; ++i) {
 	if (argv[i][0] == '-') {
 	  if (argv[i][1] == 's' || argv[i][1] == 'S' && (argc >= i + 1)) {
 		strengthScale = atof(argv[i + 1]);
+		++i;
+	  }
+	  if (argv[i][1] == 'f' || argv[i][1] == 'F' && (argc >= i + 1)) {
+		if (strcmp("png", argv[i + 1]) == 0) {
+		  outputFormat = FORMAT_PNG;
+		}
+		else if (strcmp("tga", argv[i + 1]) == 0) {
+		  outputFormat = FORMAT_TGA;
+		} else {
+		  std::cout << "Error: Unknown format: " << argv[i + 1] << std::endl;
+		  std::cout << "       -f option only accepts 'png' or 'tga'" << std::endl;
+		  return RESULT_ERROR;
+		}
 		++i;
 	  }
 	  continue;
@@ -148,7 +172,11 @@ int main(int argc, char** argv) {
     if (dotPos != std::string::npos) {
       outfilename.erase(dotPos, std::string::npos);
     }
-    outfilename += ".png";
+	if (outputFormat == FORMAT_PNG) {
+	  outfilename += ".png";
+	} else {
+	  outfilename += ".tga";
+	}
   }
 
   Imf::Array2D<Imf::Rgba> pixels;
@@ -157,39 +185,63 @@ int main(int argc, char** argv) {
 	return RESULT_ERROR;
   }
 
-  auto del = [](png_structp p) { png_destroy_write_struct(&p, nullptr); };
-  std::unique_ptr<png_struct, decltype(del)> pngWriter(png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr), del);
-  if (!pngWriter) {
-	std::cerr << "Error: png_create_write_struct failed." << std::endl;
-	return RESULT_ERROR;
-  }
-  png_infop pngInfo = png_create_info_struct(pngWriter.get());
-  if (!pngInfo) {
-	std::cerr << "Error: png_create_info_struct failed." << std::endl;
-	return RESULT_ERROR;
+  switch (outputFormat) {
+  case FORMAT_PNG: {
+	auto del = [](png_structp p) { png_destroy_write_struct(&p, nullptr); };
+	std::unique_ptr<png_struct, decltype(del)> pngWriter(png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr), del);
+	if (!pngWriter) {
+	  std::cerr << "Error: png_create_write_struct failed." << std::endl;
+	  return RESULT_ERROR;
+	}
+	png_infop pngInfo = png_create_info_struct(pngWriter.get());
+	if (!pngInfo) {
+	  std::cerr << "Error: png_create_info_struct failed." << std::endl;
+	  return RESULT_ERROR;
+	}
+
+	std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(outfilename.c_str(), "wb"), &fclose);
+	if (!fp) {
+	  std::cerr << "Error: can't open '" << outfilename << "' file." << std::endl;
+	  return RESULT_ERROR;
+	}
+
+	if (setjmp(png_jmpbuf(pngWriter.get()))) {
+	  std::cerr << "Error: png output failed." << std::endl;
+	  return RESULT_ERROR;
+	}
+	png_init_io(pngWriter.get(), fp.get());
+	png_set_IHDR(pngWriter.get(), pngInfo, w, h, 8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	png_write_info(pngWriter.get(), pngInfo);
+	std::vector<png_byte> row;
+	row.resize(4/*8bit RGBA*/ * w * sizeof(png_byte));
+	for (int y = 0; y < h; ++y) {
+	  for (int x = 0; x < w; ++x) {
+		SetPixel(&row[x * 4], pixels[y][x], strengthScale);
+	  }
+	  png_write_row(pngWriter.get(), row.data());
+	}
+	break;
   }
 
-  std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(outfilename.c_str(), "wb"), &fclose);
-  if (!fp) {
-	std::cerr << "Error: can't open '" << outfilename << "' file." << std::endl;
-	return RESULT_ERROR;
+  case FORMAT_TGA: {
+	EXR2PNG::Tga32Image image(w, h);
+	for (int y = 0; y < h; ++y) {
+	  for (int x = 0; x < w; ++x) {
+		uint8_t buf[4];
+		SetPixel(buf, pixels[h - y - 1][x], strengthScale);
+		image.SetPixel(x, y, buf[0], buf[1], buf[2], buf[3]);
+	  }
+	}
+	std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(outfilename.c_str(), "wb"), &fclose);
+	if (!fp) {
+	  std::cerr << "Error: can't open '" << outfilename << "' file." << std::endl;
+	  return RESULT_ERROR;
+	}
+	const EXR2PNG::TgaHeader header = image.GetHeader();
+	fwrite(&header, sizeof(EXR2PNG::TgaHeader), 1, fp.get());
+	fwrite(image.buf.data(), 4, image.buf.size(), fp.get());
+	break;
   }
-
-  if (setjmp(png_jmpbuf(pngWriter.get()))) {
-	std::cerr << "Error: png output failed." << std::endl;
-    return RESULT_ERROR;
   }
-  png_init_io(pngWriter.get(), fp.get());
-  png_set_IHDR(pngWriter.get(), pngInfo, w, h, 8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-  png_write_info(pngWriter.get(), pngInfo);
-  std::vector<png_byte> row;
-  row.resize(4/*8bit RGBA*/ * w * sizeof(png_byte));
-  for (int y = 0; y < h; ++y) {
-    for (int x = 0; x < w; ++x) {
-      SetPixel(&row[x * 4], pixels[y][x], strengthScale);
-    }
-    png_write_row(pngWriter.get(), row.data());
-  }
-
   return RESULT_SUCCESS;
 }
