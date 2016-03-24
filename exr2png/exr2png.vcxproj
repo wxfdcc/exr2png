@@ -325,6 +325,7 @@
     <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfWav.h" />
     <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfXdr.h" />
     <ClInclude Include="..\OpenEXR\include\OpenEXR\OpenEXRConfig.h" />
+    <ClInclude Include="..\Src\tga.h" />
     <ClInclude Include="..\zlib\include\zconf.h" />
     <ClInclude Include="..\zlib\include\zlib.h" />
     <ClInclude Include="..\zlib\include\zutil.h" />

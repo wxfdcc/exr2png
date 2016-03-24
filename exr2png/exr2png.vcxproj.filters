@@ -554,5 +554,8 @@
     <ClInclude Include="..\zlib\include\zutil.h">
       <Filter>zlib\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\Src\tga.h">
+      <Filter>Src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
