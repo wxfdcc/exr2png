@@ -1,7 +1,7 @@
 exr2png.exe -- Convert OpenEXR image to PNG image.
 Version 1.0.0, March 18, 2016
 
-Copyright (C) 2016 tn_mai
+Copyright (C) 2016 Mai Tanaka
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -19,4 +19,4 @@ freely, subject to the following restrictions:
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 
-tn_mai rabitfiver@gmail.com
+tn_mai mai.tanaka.cpper@gmail.com
