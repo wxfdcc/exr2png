@@ -11,6 +11,10 @@
 #include <memory>
 #include <vector>
 
+#define EXR2PNG_VERSION 1.1
+#define EXR2PNG_TO_STR_I(x) #x
+#define EXR2PNG_TO_STR(x) EXR2PNG_TO_STR_I(x)
+
 /** The result of the conversion.
 */
 enum Result {
@@ -67,11 +71,12 @@ Result ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, i
 /*** Print program usage.
 */
 void PrintUsage() {
-  std::cout << "exr2png.exe [-s scale] [infile] [outfile]" << std::endl;
+  std::cout << "exr2png Ver. " << EXR2PNG_TO_STR(EXR2PNG_VERSION) << std::endl;
+  std::cout << "Convert to PNG/TGA image from OpenEXR image." << std::endl;
+  std::cout << "The alpha component in PNG has the reciprocal of the color strength." << std::endl;
+  std::cout << "To restore the color, divide RGB by alpha." << std::endl;
   std::cout << std::endl;
-  std::cout << "  Convert to PNG image from OpenEXR image." << std::endl;
-  std::cout << "  The alpha component in PNG has the reciprocal of the color strength." << std::endl;
-  std::cout << "  To restore the color, divide RGB by alpha." << std::endl;
+  std::cout << "usage: exr2png.exe [-s scale] [infile] [outfile]" << std::endl;
   std::cout << std::endl;
   std::cout << "  -s scale: The low dynamic range scale." << std::endl;
   std::cout << "            0.5 maps the range of 0-0.5 to 0-255, 2.0 maps 0-2.0 to 0-255." << std::endl;
