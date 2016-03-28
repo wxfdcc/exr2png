@@ -98,31 +98,33 @@ void PrintUsage() {
   @return The uint8_t color that is converted from the half precision color.
 */
 uint8_t HalfToUint8(half n, float strength) {
-  return std::max<uint8_t>(0, std::min<uint8_t>(255, static_cast<uint8_t>((255.0f * n) / strength + 0.5f)));
+  const float value = std::max<float>(0.0f, n);
+  return std::max<uint8_t>(0, std::min<uint8_t>(255, static_cast<uint8_t>((255.0f * value) / strength + 0.5f)));
 }
 
 /** Convert to the png_byte color from the half precision RGBA color.
 
-  @param buf       The pointer to the png_byte color buffer.
-  @param rgba      The source of the half precision RGBA color. The element of A is ignored.
-  @param strength  The scale of the color strength. The default value is 1.0.
-                   If it is 0.5, the color is doubled. If it is 2.0, the color is halved.
+  @param buf            The pointer to the png_byte color buffer.
+  @param rgba           The source of the half precision RGBA color. The element of A is ignored.
+  @param strengthScale  The scale of the color strength. The default value is 1.0.
+                        If it is 0.5, the color is doubled. If it is 2.0, the color is halved.
 
   This function stores 4 byte(RGBA) to buf.
   buf should have large enough to store it.
   The element of A in PNG has the reciprocal of strength of the color.
 */
-void SetPixel(png_bytep buf, const Imf::Rgba& rgba, float strength) {
+void SetPixel(png_bytep buf, const Imf::Rgba& rgba, float strengthScale) {
   uint8_t* p = static_cast<uint8_t*>(buf);
+  float strength = 1.0f;
   half biggest = rgba.r;
   if (biggest < rgba.g) biggest = rgba.g;
   if (biggest < rgba.b) biggest = rgba.b;
-  if (biggest >= strength) {
-	strength *= biggest;
+  if (biggest > strengthScale) {
+	strength *= biggest / strengthScale;
   }
-  p[0] = HalfToUint8(rgba.r, strength);
-  p[1] = HalfToUint8(rgba.g, strength);
-  p[2] = HalfToUint8(rgba.b, strength);
+  p[0] = HalfToUint8(rgba.r, strength * strengthScale);
+  p[1] = HalfToUint8(rgba.g, strength * strengthScale);
+  p[2] = HalfToUint8(rgba.b, strength * strengthScale);
   p[3] = std::max<uint8_t>(1, std::min<uint8_t>(255, static_cast<uint8_t>(255.0f / strength + 0.5f)));
 }
 
