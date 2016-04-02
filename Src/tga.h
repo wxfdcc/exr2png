@@ -23,7 +23,7 @@ namespace EXR2PNG {
 	  return *this;
 	}
 	operator uint16_t() const {
-	  return static_cast<uint16_t>(p[0]) + static_cast<uint16_t>(p[1]) << 8;
+	  return static_cast<uint16_t>(p[0]) + (static_cast<uint16_t>(p[1]) << 8);
 	}
   };
 
