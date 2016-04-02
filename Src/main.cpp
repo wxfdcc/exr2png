@@ -3,6 +3,7 @@
   Convert OpenEXR image file to PNG image file.
 */
 #include "tga.h"
+#include "cubemapgen.h"
 #include <ImfRgbaFile.h>
 #include <ImfArray.h>
 #include <png.h>
@@ -10,6 +11,7 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <array>
 
 #define EXR2PNG_VERSION 1.1
 #define EXR2PNG_TO_STR_I(x) #x
@@ -28,6 +30,37 @@ enum Format {
   FORMAT_PNG, ///< Output PNG format.
   FORMAT_TGA, ///< Output TGA format.
 };
+
+/** The conversion mode.
+*/
+enum ConversionMode {
+  CONVERSIONMODE_SINGLE, ///< Output a file(default).
+  CONVERSIONMODE_CUBEMAP_FILTERED, ///< Output the filterd cubemap.
+  CONVERSIONMODE_CUBEMAP_IRRADIANCE, ///< Output the irradiance cubemap.
+};
+
+enum ImageDir {
+  ImageDir_Top,
+  ImageDir_Left,
+  ImageDir_Bottom,
+  ImageDir_Right,
+};
+
+struct ImageRect {
+  int left, top;
+  int right, bottom;
+  ImageDir dir;
+};
+
+typedef std::array<ImageRect, 6> ImageRectArray;
+ImageRectArray cubemapRectArray = { {
+  { 512,   0, 768, 256, ImageDir_Top }, // +X
+  {   0,   0, 256, 256, ImageDir_Top }, // -X
+  {   0, 256, 256, 512, ImageDir_Top }, // +Y
+  { 256, 256, 512, 512, ImageDir_Left }, // -Y
+  { 512, 256, 768, 512, ImageDir_Top }, // +Z
+  { 256,   0, 512, 256, ImageDir_Left } // -Z
+} };
 
 /** Read OpenEXR image from file.
 
@@ -84,6 +117,15 @@ void PrintUsage() {
   std::cout << "            If not passed this option, the default is 1.0." << std::endl;
   std::cout << "  -f type : The output format type." << std::endl;
   std::cout << "            'png' or 'tga' is accepted." << std::endl;
+  std::cout << "  -c type : Enable cubemap mode." << std::endl;
+  std::cout << "            You can set 6 region with the order of +x -x +y -y +z -z." << std::endl;
+  std::cout << "            And output 6 files that have the postfix of '_[pn][xyz]'" << std::endl;
+  std::cout << "            'type' is following type:" << std::endl;
+  std::cout << "            filterd   : generate the filtered cubemap." << std::endl;
+  std::cout << "            irradiance: generate the irradiance cubemap." << std::endl;
+  std::cout << " [+-][xyz] left top right bottom:" << std::endl;
+  std::cout << "            Set the source cubemap region." << std::endl;
+  std::cout << "            The reagion is the rectangle of pixels." << std::endl;
   std::cout << "  infile  : OpenEXR image file." << std::endl;
   std::cout << "  outfile : PNG image file that converted from infile." << std::endl;
   std::cout << "            If not passed this option, use the infile that has replaced" << std::endl;
@@ -113,7 +155,8 @@ uint8_t HalfToUint8(half n, float strength) {
   buf should have large enough to store it.
   The element of A in PNG has the reciprocal of strength of the color.
 */
-void SetPixel(png_bytep buf, const Imf::Rgba& rgba, float strengthScale) {
+template<typename T>
+void SetPixel(png_bytep buf, const T& rgba, float strengthScale) {
   uint8_t* p = static_cast<uint8_t*>(buf);
   float strength = 1.0f;
   half biggest = rgba.r;
@@ -128,70 +171,24 @@ void SetPixel(png_bytep buf, const Imf::Rgba& rgba, float strengthScale) {
   p[3] = std::max<uint8_t>(1, std::min<uint8_t>(255, static_cast<uint8_t>(255.0f / strength + 0.5f)));
 }
 
-/** The entry point.
-
-  @param argc  argument count.
-  @param argv  argument vector.
-
-  @retval RESULT_SUCCESS  the conversion is success.
-  @retval RESULT_ERROR    the conversion is failure.
+/** Get Imf::Rgba object.
 */
-int main(int argc, char** argv) {
-  const char* infilename = nullptr;
-  std::string outfilename;
-  float strengthScale = 1.0f;
-  Format outputFormat = FORMAT_PNG;
-  for (int i = 1; i < argc; ++i) {
-	if (argv[i][0] == '-') {
-	  if (argv[i][1] == 's' || argv[i][1] == 'S' && (argc >= i + 1)) {
-		strengthScale = atof(argv[i + 1]);
-		++i;
-	  }
-	  if (argv[i][1] == 'f' || argv[i][1] == 'F' && (argc >= i + 1)) {
-		if (strcmp("png", argv[i + 1]) == 0) {
-		  outputFormat = FORMAT_PNG;
-		}
-		else if (strcmp("tga", argv[i + 1]) == 0) {
-		  outputFormat = FORMAT_TGA;
-		} else {
-		  std::cout << "Error: Unknown format: " << argv[i + 1] << std::endl;
-		  std::cout << "       -f option only accepts 'png' or 'tga'" << std::endl;
-		  return RESULT_ERROR;
-		}
-		++i;
-	  }
-	  continue;
-	}
-    if (!infilename) {
-      infilename = argv[i];
-    } else if (outfilename.empty()) {
-      outfilename = argv[i];  
-      break;
-    }
-  }
-  if (!infilename) {
-    PrintUsage();
-    return RESULT_SUCCESS;
-  }
-  if (outfilename.empty()) {
-    outfilename = infilename;
-    auto dotPos = outfilename.find_last_of('.');
-    if (dotPos != std::string::npos) {
-      outfilename.erase(dotPos, std::string::npos);
-    }
-	if (outputFormat == FORMAT_PNG) {
-	  outfilename += ".png";
-	} else {
-	  outfilename += ".tga";
-	}
-  }
+Imf::Rgba Get(const Imf::Array2D<Imf::Rgba>& pixels, int x, int y) {
+  return pixels[y][x];
+}
 
-  Imf::Array2D<Imf::Rgba> pixels;
-  int w, h;
-  if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
-	return RESULT_ERROR;
-  }
+struct FloatRgb {
+  float r, g, b;
+};
+FloatRgb Get(const CubeMapGen::ImageSurface& surface, int x, int y) {
+  const float* p = surface.GetSurfaceTexelPtr(x, y);
+  return{ p[0], p[1], p[2] };
+}
 
+/** Write the pixels to file.
+*/
+template<typename T>
+Result WriteFile(const T& pixels, int w, int h, float strengthScale, const std::string& outfilename, Format outputFormat) {
   switch (outputFormat) {
   case FORMAT_PNG: {
 	auto del = [](png_structp p) { png_destroy_write_struct(&p, nullptr); };
@@ -223,7 +220,7 @@ int main(int argc, char** argv) {
 	row.resize(4/*8bit RGBA*/ * w * sizeof(png_byte));
 	for (int y = 0; y < h; ++y) {
 	  for (int x = 0; x < w; ++x) {
-		SetPixel(&row[x * 4], pixels[y][x], strengthScale);
+		SetPixel(&row[x * 4], Get(pixels, x, y), strengthScale);
 	  }
 	  png_write_row(pngWriter.get(), row.data());
 	}
@@ -235,7 +232,7 @@ int main(int argc, char** argv) {
 	for (int y = 0; y < h; ++y) {
 	  for (int x = 0; x < w; ++x) {
 		uint8_t buf[4];
-		SetPixel(buf, pixels[h - y - 1][x], strengthScale);
+		SetPixel(buf, Get(pixels, x, h - y - 1), strengthScale);
 		image.SetPixel(x, y, buf[0], buf[1], buf[2], buf[3]);
 	  }
 	}
@@ -249,6 +246,236 @@ int main(int argc, char** argv) {
 	fwrite(image.buf.data(), 4, image.buf.size(), fp.get());
 	break;
   }
+  }
+  return RESULT_SUCCESS;
+}
+
+typedef std::array<CubeMapGen::ImageSurface, 6> CubemapImageSurface;
+/** Create the cubemap image array from an EXR image.
+
+  @param pixels     The source EXR image.
+  @param rectArray  The cubemap region array.
+
+  @return The cubemap image array.
+*/
+CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, const ImageRectArray& rectArray) {
+  CubemapImageSurface cubemap;
+  for (int i = 0; i < 6; ++i) {
+	const auto& rect = rectArray[i];
+	CubeMapGen::ImageSurface& surface = cubemap[i];
+	const int w = rect.right - rect.left;
+	const int h = rect.bottom - rect.top;
+	surface.Init(w, h);
+	float* p = surface.GetSurfacePtr();
+	switch (rect.dir) {
+	default:
+	case ImageDir_Top:
+	  for (int y = rect.top; y < rect.bottom; ++y) {
+		for (int x = rect.left; x < rect.right; ++x) {
+		  const auto& e = pixels[y][x];
+		  p[CubeMapGen::ImageChannel_Red] = e.r;
+		  p[CubeMapGen::ImageChannel_Green] = e.g;
+		  p[CubeMapGen::ImageChannel_Blue] = e.b;
+		  p += CubeMapGen::numberOfImageChannels;
+		}
+	  }
+	  break;
+	case ImageDir_Left:
+	  for (int y = rect.left; y < rect.right; ++y) {
+		for (int x = rect.bottom - 1; x >= rect.top; --x) {
+		  const auto& e = pixels[y][x];
+		  p[CubeMapGen::ImageChannel_Red] = e.r;
+		  p[CubeMapGen::ImageChannel_Green] = e.g;
+		  p[CubeMapGen::ImageChannel_Blue] = e.b;
+		  p += CubeMapGen::numberOfImageChannels;
+		}
+	  }
+	  break;
+	case ImageDir_Bottom:
+	  for (int y = rect.bottom - 1; y >= rect.top; --y) {
+		for (int x = rect.right - 1; x >= rect.left; --x) {
+		  const auto& e = pixels[y][x];
+		  p[CubeMapGen::ImageChannel_Red] = e.r;
+		  p[CubeMapGen::ImageChannel_Green] = e.g;
+		  p[CubeMapGen::ImageChannel_Blue] = e.b;
+		  p += CubeMapGen::numberOfImageChannels;
+		}
+	  }
+	  break;
+	case ImageDir_Right:
+	  for (int y = rect.right; y >= rect.left; --y) {
+		for (int x = rect.top; x < rect.bottom; ++x) {
+		  const auto& e = pixels[y][x];
+		  p[CubeMapGen::ImageChannel_Red] = e.r;
+		  p[CubeMapGen::ImageChannel_Green] = e.g;
+		  p[CubeMapGen::ImageChannel_Blue] = e.b;
+		  p += CubeMapGen::numberOfImageChannels;
+		}
+	  }
+	  break;
+	}
+  }
+  return cubemap;
+}
+
+/** The entry point.
+
+  @param argc  argument count.
+  @param argv  argument vector.
+
+  @retval RESULT_SUCCESS  the conversion is success.
+  @retval RESULT_ERROR    the conversion is failure.
+*/
+int main(int argc, char** argv) {
+  const char* infilename = nullptr;
+  std::string outfilename;
+  float strengthScale = 1.0f;
+  Format outputFormat = FORMAT_PNG;
+  ConversionMode conversionMode = CONVERSIONMODE_SINGLE;
+  for (int i = 1; i < argc; ++i) {
+	if (argv[i][0] == '-' || argv[i][0] == '+') {
+	  if ((argv[i][1] == 'x' || argv[i][1] == 'y' || argv[i][1] == 'z') && (argc >= i + 5)) {
+		char* p;
+		const int l = strtol(argv[i + 1], &p, 10);
+		if (*p) {
+		  std::cout << "Error: Invalid number in -x: " << argv[i + 1] << std::endl;
+		  return RESULT_ERROR;
+		}
+		const int t = strtol(argv[i + 2], &p, 10);
+		if (*p) {
+		  std::cout << "Error: Invalid number in -x: " << argv[i + 2] << std::endl;
+		  return RESULT_ERROR;
+		}
+		const int r = strtol(argv[i + 3], &p, 10);
+		if (*p) {
+		  std::cout << "Error: Invalid number in -x: " << argv[i + 3] << std::endl;
+		  return RESULT_ERROR;
+		}
+		const int b = strtol(argv[i + 4], &p, 10);
+		if (*p) {
+		  std::cout << "Error: Invalid number in -x: " << argv[i + 4] << std::endl;
+		  return RESULT_ERROR;
+		}
+		ImageDir dir;
+		switch (argv[i + 5][0]) {
+		case 'l': dir = ImageDir_Left; break;
+		case 't': dir = ImageDir_Top; break;
+		case 'r': dir = ImageDir_Right; break;
+		case 'b': dir = ImageDir_Bottom; break;
+		default: dir = ImageDir_Top; break;
+		}
+		const int offset = argv[i][0] == '+' ? 0 : 1;
+		switch (argv[i][1]) {
+		case 'x': cubemapRectArray[CubeMapGen::CP_FACE_X_POS + offset] = { l, t, r, b, dir }; break;
+		case 'y': cubemapRectArray[CubeMapGen::CP_FACE_Y_POS + offset] = { l, t, r, b, dir }; break;
+		case 'z': cubemapRectArray[CubeMapGen::CP_FACE_Z_POS + offset] = { l, t, r, b, dir }; break;
+		}
+		i += 5;
+		continue;
+	  }
+	}
+	if (argv[i][0] == '-') {
+	  if (argv[i][1] == 's' || argv[i][1] == 'S' && (argc >= i + 1)) {
+		strengthScale = static_cast<float>(atof(argv[i + 1]));
+		++i;
+	  } else if (argv[i][1] == 'f' || argv[i][1] == 'F' && (argc >= i + 1)) {
+		if (strcmp("png", argv[i + 1]) == 0) {
+		  outputFormat = FORMAT_PNG;
+		} else if (strcmp("tga", argv[i + 1]) == 0) {
+		  outputFormat = FORMAT_TGA;
+		} else {
+		  std::cout << "Error: Unknown format: " << argv[i + 1] << std::endl;
+		  std::cout << "       -f option only accepts 'png' or 'tga'" << std::endl;
+		  return RESULT_ERROR;
+		}
+		++i;
+	  } else if (argv[i][1] == 'c' && (argc >= i + 1)) {
+		if (strcmp("filterd", argv[i + 1]) == 0) {
+		  conversionMode = CONVERSIONMODE_CUBEMAP_FILTERED;
+		} else if (strcmp("irradiance", argv[i + 1]) == 0) {
+		  conversionMode = CONVERSIONMODE_CUBEMAP_IRRADIANCE;
+		} else {
+		  std::cout << "Error: Unknown format in -c: " << argv[i + 1] << std::endl;
+		  return RESULT_ERROR;
+		}
+		++i;
+	  }
+	  continue;
+	}
+	if (!infilename) {
+      infilename = argv[i];
+    } else if (outfilename.empty()) {
+      outfilename = argv[i];  
+      break;
+    }
+  }
+
+  if (!infilename) {
+	PrintUsage();
+	return RESULT_SUCCESS;
+  }
+
+  if (conversionMode == CONVERSIONMODE_SINGLE) {
+	if (outfilename.empty()) {
+	  outfilename = infilename;
+	  auto dotPos = outfilename.find_last_of('.');
+	  if (dotPos != std::string::npos) {
+		outfilename.erase(dotPos, std::string::npos);
+	  }
+	  if (outputFormat == FORMAT_PNG) {
+		outfilename += ".png";
+	  } else {
+		outfilename += ".tga";
+	  }
+	}
+
+	Imf::Array2D<Imf::Rgba> pixels;
+	int w, h;
+	if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
+	  return RESULT_ERROR;
+	}
+	return WriteFile(pixels, w, h, strengthScale, outfilename, outputFormat);
+  } else {
+	if (outfilename.empty()) {
+	  outfilename = infilename;
+	  auto dotPos = outfilename.find_last_of('.');
+	  if (dotPos != std::string::npos) {
+		outfilename.erase(dotPos, std::string::npos);
+	  }
+	}
+
+	Imf::Array2D<Imf::Rgba> pixels;
+	int w, h;
+	if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
+	  return RESULT_ERROR;
+	}
+	CubemapImageSurface srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	std::array<CubeMapGen::ImageSurface, CubeMapGen::numberOfCubemapFaces> destCubemap;
+	for (auto& e : destCubemap) {
+	  e.Init(srcCubemap[0].m_Width, srcCubemap[0].m_Height);
+	}
+	switch (conversionMode) {
+	default:
+	case CONVERSIONMODE_CUBEMAP_FILTERED:
+	  CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data());
+	  break;
+	case CONVERSIONMODE_CUBEMAP_IRRADIANCE:
+	  CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemap.data());
+	  break;
+	}
+
+	static const char* const postfixArray[] = { "_px", "_nx", "_py", "_ny", "_pz", "_nz" };
+	for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
+	  std::string filename = outfilename + postfixArray[i];
+	  if (outputFormat == FORMAT_PNG) {
+		filename += ".png";
+	  } else {
+		filename += ".tga";
+	  }
+	  if (WriteFile(destCubemap[i], destCubemap[i].m_Width, destCubemap[i].m_Height, strengthScale, filename, outputFormat) == RESULT_ERROR) {
+		return RESULT_ERROR;
+	  }
+	}
   }
   return RESULT_SUCCESS;
 }

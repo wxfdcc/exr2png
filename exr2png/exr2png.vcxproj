@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\cubemapgen.cpp" />
     <ClCompile Include="..\Src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +326,7 @@
     <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfWav.h" />
     <ClInclude Include="..\OpenEXR\include\OpenEXR\ImfXdr.h" />
     <ClInclude Include="..\OpenEXR\include\OpenEXR\OpenEXRConfig.h" />
+    <ClInclude Include="..\Src\cubemapgen.h" />
     <ClInclude Include="..\Src\tga.h" />
     <ClInclude Include="..\zlib\include\zconf.h" />
     <ClInclude Include="..\zlib\include\zlib.h" />
