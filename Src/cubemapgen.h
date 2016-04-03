@@ -5,6 +5,7 @@
 #define EXR2PNG_CUBEMAPGEN_H_INCLUDED
 #include <cstdint>
 #include <vector>
+#include <array>
 
 namespace CubeMapGen {
 
@@ -59,6 +60,7 @@ struct BaseImageSurface {
   }
 };
 typedef BaseImageSurface<numberOfImageChannels> ImageSurface;
+typedef std::array<ImageSurface, numberOfCubemapFaces> CubemapImageSurface;
 typedef BaseImageSurface<4> NormalSurface;
 
 void FilterCubeSurfaces(

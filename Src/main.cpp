@@ -12,6 +12,7 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <cassert>
 
 #define EXR2PNG_VERSION 1.1
 #define EXR2PNG_TO_STR_I(x) #x
@@ -37,6 +38,7 @@ enum ConversionMode {
   CONVERSIONMODE_SINGLE, ///< Output a file(default).
   CONVERSIONMODE_CUBEMAP_FILTERED, ///< Output the filterd cubemap.
   CONVERSIONMODE_CUBEMAP_IRRADIANCE, ///< Output the irradiance cubemap.
+  CONVERSIONMODE_CUBEMAP_NONFILTERD, ///< Output the non filtered cubemap.
 };
 
 enum ImageDir {
@@ -123,6 +125,7 @@ void PrintUsage() {
   std::cout << "            'type' is following type:" << std::endl;
   std::cout << "            filterd   : generate the filtered cubemap." << std::endl;
   std::cout << "            irradiance: generate the irradiance cubemap." << std::endl;
+  std::cout << "            none      : generate the non filtered cubemap." << std::endl;
   std::cout << " [+-][xyz] left top right bottom:" << std::endl;
   std::cout << "            Set the source cubemap region." << std::endl;
   std::cout << "            The reagion is the rectangle of pixels." << std::endl;
@@ -250,7 +253,47 @@ Result WriteFile(const T& pixels, int w, int h, float strengthScale, const std::
   return RESULT_SUCCESS;
 }
 
-typedef std::array<CubeMapGen::ImageSurface, 6> CubemapImageSurface;
+/// Result of IsInsideImage().
+struct IsInsideImageResult {
+  /**
+    true : all rect is inside. false: one or more rect isn't inside.
+    false: One or more region is outside the source image,
+	       or the left(or top) of the region is greater than the right(or bottom).
+  */
+  bool isInside;
+
+  /**
+    If 'isInside' is 'false', the index of first rect that isn't inside,
+    otherwize it shouldn't to reference.
+  */
+  uint8_t indexOfInvalidRect;
+
+  operator bool() const { return isInside; }
+};
+
+/** Check that all regions is inside the source image.
+
+  @param rectArray  The cubemap region array.
+  @param pixels     The source EXR image.
+
+  @return true  All regions is inside the source image.
+*/
+IsInsideImageResult IsInsideImage(const ImageRectArray& rectArray, const Imf::Array2D<Imf::Rgba>& pixels) {
+  const int w = pixels.width();
+  const int h = pixels.height();
+  uint8_t i = 0;
+  for (auto& e : rectArray) {
+	if (e.left < 0 || e.left >= e.right || e.right >= w) {
+	  return{ false, i };
+	}
+	if (e.top < 0 || e.top >= e.bottom || e.bottom >= h) {
+	  return{ false, i };
+	}
+	++i;
+  }
+  return{ true, 0 };
+}
+
 /** Create the cubemap image array from an EXR image.
 
   @param pixels     The source EXR image.
@@ -258,13 +301,14 @@ typedef std::array<CubeMapGen::ImageSurface, 6> CubemapImageSurface;
 
   @return The cubemap image array.
 */
-CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, const ImageRectArray& rectArray) {
-  CubemapImageSurface cubemap;
+CubeMapGen::CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, const ImageRectArray& rectArray) {
+  CubeMapGen::CubemapImageSurface cubemap;
   for (int i = 0; i < 6; ++i) {
 	const auto& rect = rectArray[i];
 	CubeMapGen::ImageSurface& surface = cubemap[i];
 	const int w = rect.right - rect.left;
 	const int h = rect.bottom - rect.top;
+	//std::cout << "cubemap surface " << i << "(" << w << "," << h << ")" << std::endl;
 	surface.Init(w, h);
 	float* p = surface.GetSurfacePtr();
 	switch (rect.dir) {
@@ -281,8 +325,8 @@ CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, 
 	  }
 	  break;
 	case ImageDir_Left:
-	  for (int y = rect.left; y < rect.right; ++y) {
-		for (int x = rect.bottom - 1; x >= rect.top; --x) {
+	  for (int x = rect.left; x < rect.right; ++x) {
+		for (int y = rect.bottom - 1; y >= rect.top; --y) {
 		  const auto& e = pixels[y][x];
 		  p[CubeMapGen::ImageChannel_Red] = e.r;
 		  p[CubeMapGen::ImageChannel_Green] = e.g;
@@ -303,8 +347,8 @@ CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, 
 	  }
 	  break;
 	case ImageDir_Right:
-	  for (int y = rect.right; y >= rect.left; --y) {
-		for (int x = rect.top; x < rect.bottom; ++x) {
+	  for (int x = rect.right - 1; x >= rect.left; --x) {
+		for (int y = rect.top; y < rect.bottom; ++y) {
 		  const auto& e = pixels[y][x];
 		  p[CubeMapGen::ImageChannel_Red] = e.r;
 		  p[CubeMapGen::ImageChannel_Green] = e.g;
@@ -314,6 +358,7 @@ CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, 
 	  }
 	  break;
 	}
+	assert(static_cast<size_t>(p - surface.GetSurfacePtr()) <= surface.buf.size());
   }
   return cubemap;
 }
@@ -327,6 +372,7 @@ CubemapImageSurface CreateCubemapFromEXR(const Imf::Array2D<Imf::Rgba>& pixels, 
   @retval RESULT_ERROR    the conversion is failure.
 */
 int main(int argc, char** argv) {
+  bool verbose = false;
   const char* infilename = nullptr;
   std::string outfilename;
   float strengthScale = 1.0f;
@@ -338,22 +384,22 @@ int main(int argc, char** argv) {
 		char* p;
 		const int l = strtol(argv[i + 1], &p, 10);
 		if (*p) {
-		  std::cout << "Error: Invalid number in -x: " << argv[i + 1] << std::endl;
+		  std::cerr << "Error: Invalid number in " << argv[i] << ": " << argv[i + 1] << std::endl;
 		  return RESULT_ERROR;
 		}
 		const int t = strtol(argv[i + 2], &p, 10);
 		if (*p) {
-		  std::cout << "Error: Invalid number in -x: " << argv[i + 2] << std::endl;
+		  std::cerr << "Error: Invalid number in " << argv[i] << ": " << argv[i + 2] << std::endl;
 		  return RESULT_ERROR;
 		}
 		const int r = strtol(argv[i + 3], &p, 10);
 		if (*p) {
-		  std::cout << "Error: Invalid number in -x: " << argv[i + 3] << std::endl;
+		  std::cerr << "Error: Invalid number in " << argv[i] << ": " << argv[i + 3] << std::endl;
 		  return RESULT_ERROR;
 		}
 		const int b = strtol(argv[i + 4], &p, 10);
 		if (*p) {
-		  std::cout << "Error: Invalid number in -x: " << argv[i + 4] << std::endl;
+		  std::cerr << "Error: Invalid number in " << argv[i] << ": " << argv[i + 4] << std::endl;
 		  return RESULT_ERROR;
 		}
 		ImageDir dir;
@@ -362,13 +408,18 @@ int main(int argc, char** argv) {
 		case 't': dir = ImageDir_Top; break;
 		case 'r': dir = ImageDir_Right; break;
 		case 'b': dir = ImageDir_Bottom; break;
-		default: dir = ImageDir_Top; break;
+		default:
+		  std::cerr << "Error: Invalid direction in " << argv[i] << ": " << argv[i + 5] << std::endl;
+		  return RESULT_ERROR;
 		}
 		const int offset = argv[i][0] == '+' ? 0 : 1;
 		switch (argv[i][1]) {
 		case 'x': cubemapRectArray[CubeMapGen::CP_FACE_X_POS + offset] = { l, t, r, b, dir }; break;
 		case 'y': cubemapRectArray[CubeMapGen::CP_FACE_Y_POS + offset] = { l, t, r, b, dir }; break;
 		case 'z': cubemapRectArray[CubeMapGen::CP_FACE_Z_POS + offset] = { l, t, r, b, dir }; break;
+		}
+		if (verbose) {
+		  std::cout << "Set " << argv[i] << std::endl;
 		}
 		i += 5;
 		continue;
@@ -390,10 +441,12 @@ int main(int argc, char** argv) {
 		}
 		++i;
 	  } else if (argv[i][1] == 'c' && (argc >= i + 1)) {
-		if (strcmp("filterd", argv[i + 1]) == 0) {
+		if (strcmp("filtered", argv[i + 1]) == 0) {
 		  conversionMode = CONVERSIONMODE_CUBEMAP_FILTERED;
 		} else if (strcmp("irradiance", argv[i + 1]) == 0) {
 		  conversionMode = CONVERSIONMODE_CUBEMAP_IRRADIANCE;
+		} else if (strcmp("none", argv[i + 1]) == 0) {
+		  conversionMode = CONVERSIONMODE_CUBEMAP_NONFILTERD;
 		} else {
 		  std::cout << "Error: Unknown format in -c: " << argv[i + 1] << std::endl;
 		  return RESULT_ERROR;
@@ -403,9 +456,15 @@ int main(int argc, char** argv) {
 	  continue;
 	}
 	if (!infilename) {
+	  if (verbose) {
+		std::cout << "infile: " << argv[i] << std::endl;
+	  }
       infilename = argv[i];
     } else if (outfilename.empty()) {
-      outfilename = argv[i];  
+	  if (verbose) {
+		std::cout << "outfile: " << argv[i] << std::endl;
+	  }
+	  outfilename = argv[i];
       break;
     }
   }
@@ -444,37 +503,55 @@ int main(int argc, char** argv) {
 	  }
 	}
 
-	Imf::Array2D<Imf::Rgba> pixels;
-	int w, h;
-	if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
-	  return RESULT_ERROR;
-	}
-	CubemapImageSurface srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
-	std::array<CubeMapGen::ImageSurface, CubeMapGen::numberOfCubemapFaces> destCubemap;
-	for (auto& e : destCubemap) {
-	  e.Init(srcCubemap[0].m_Width, srcCubemap[0].m_Height);
-	}
-	switch (conversionMode) {
-	default:
-	case CONVERSIONMODE_CUBEMAP_FILTERED:
-	  CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data());
-	  break;
-	case CONVERSIONMODE_CUBEMAP_IRRADIANCE:
-	  CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemap.data());
-	  break;
-	}
-
-	static const char* const postfixArray[] = { "_px", "_nx", "_py", "_ny", "_pz", "_nz" };
-	for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
-	  std::string filename = outfilename + postfixArray[i];
-	  if (outputFormat == FORMAT_PNG) {
-		filename += ".png";
-	  } else {
-		filename += ".tga";
-	  }
-	  if (WriteFile(destCubemap[i], destCubemap[i].m_Width, destCubemap[i].m_Height, strengthScale, filename, outputFormat) == RESULT_ERROR) {
+	try {
+	  Imf::Array2D<Imf::Rgba> pixels;
+	  int w, h;
+	  if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
 		return RESULT_ERROR;
 	  }
+	  if (const auto result = IsInsideImage(cubemapRectArray, pixels)) {
+		static const char optionName[][3] = { "+x", "-x", "+y", "-y", "+z", "-z" };
+		const int i = result.indexOfInvalidRect;
+		std::cout << "Error: Invalid region in " << optionName[i] <<
+		  ":(" << cubemapRectArray[i].left << ", " << cubemapRectArray[i].top <<
+		  "-" << cubemapRectArray[i].right << ", " << cubemapRectArray[i].bottom << ")" << std::endl;
+		return RESULT_ERROR;
+	  }
+
+	  CubeMapGen::CubemapImageSurface srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	  CubeMapGen::CubemapImageSurface destCubemap;
+	  for (auto& e : destCubemap) {
+		e.Init(srcCubemap[0].m_Width, srcCubemap[0].m_Height);
+	  }
+	  switch (conversionMode) {
+	  default:
+	  case CONVERSIONMODE_CUBEMAP_FILTERED:
+		CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data());
+		break;
+	  case CONVERSIONMODE_CUBEMAP_IRRADIANCE:
+		CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemap.data());
+		break;
+	  case CONVERSIONMODE_CUBEMAP_NONFILTERD:
+		destCubemap = srcCubemap;
+		break;
+	  }
+
+	  static const char* const postfixArray[] = { "_px", "_nx", "_py", "_ny", "_pz", "_nz" };
+	  for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
+		std::string filename = outfilename + postfixArray[i];
+		if (outputFormat == FORMAT_PNG) {
+		  filename += ".png";
+		} else {
+		  filename += ".tga";
+		}
+		if (WriteFile(destCubemap[i], destCubemap[i].m_Width, destCubemap[i].m_Height, strengthScale, filename, outputFormat) == RESULT_ERROR) {
+		  return RESULT_ERROR;
+		}
+	  }
+	}
+	catch (std::exception& e) {
+	  std::cerr << "Error: " << e.what() << std::endl;
+	  return RESULT_ERROR;
 	}
   }
   return RESULT_SUCCESS;
