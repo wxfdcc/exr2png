@@ -106,6 +106,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +146,9 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +156,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Half.lib;Iex-2_2.lib;IexMath-2_2.lib;IlmThread-2_2.lib;Imath-2_2.lib;libpng16.lib;IlmImf-2_2.lib;IlmImfUtil-2_2.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
