@@ -283,10 +283,10 @@ IsInsideImageResult IsInsideImage(const ImageRectArray& rectArray, const Imf::Ar
   const int h = pixels.height();
   uint8_t i = 0;
   for (auto& e : rectArray) {
-	if (e.left < 0 || e.left >= e.right || e.right >= w) {
+	if (e.left < 0 || e.left >= e.right || e.right > w) {
 	  return{ false, i };
 	}
-	if (e.top < 0 || e.top >= e.bottom || e.bottom >= h) {
+	if (e.top < 0 || e.top >= e.bottom || e.bottom > h) {
 	  return{ false, i };
 	}
 	++i;
@@ -509,7 +509,8 @@ int main(int argc, char** argv) {
 	  if (ReadRgbaExrFile(infilename, &pixels, &w, &h) == RESULT_ERROR) {
 		return RESULT_ERROR;
 	  }
-	  if (const auto result = IsInsideImage(cubemapRectArray, pixels)) {
+	  const auto result = IsInsideImage(cubemapRectArray, pixels);
+	  if (!result) {
 		static const char optionName[][3] = { "+x", "-x", "+y", "-y", "+z", "-z" };
 		const int i = result.indexOfInvalidRect;
 		std::cout << "Error: Invalid region in " << optionName[i] <<
