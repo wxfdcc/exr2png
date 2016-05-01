@@ -36,7 +36,7 @@ enum Format {
 */
 enum ConversionMode {
   CONVERSIONMODE_SINGLE, ///< Output a file(default).
-  CONVERSIONMODE_CUBEMAP_FILTERED, ///< Output the filterd cubemap.
+  CONVERSIONMODE_CUBEMAP_FILTERED, ///< Output the filtered cubemap.
   CONVERSIONMODE_CUBEMAP_IRRADIANCE, ///< Output the irradiance cubemap.
   CONVERSIONMODE_CUBEMAP_NONFILTERD, ///< Output the non filtered cubemap.
 };
@@ -123,7 +123,7 @@ void PrintUsage() {
   std::cout << "            You can set 6 region with the order of +x -x +y -y +z -z." << std::endl;
   std::cout << "            And output 6 files that have the postfix of '_[pn][xyz]'" << std::endl;
   std::cout << "            'type' is following type:" << std::endl;
-  std::cout << "            filterd   : generate the filtered cubemap." << std::endl;
+  std::cout << "            filtered  : generate the filtered cubemap." << std::endl;
   std::cout << "            irradiance: generate the irradiance cubemap." << std::endl;
   std::cout << "            none      : generate the non filtered cubemap." << std::endl;
   std::cout << " [+-][xyz] left top right bottom:" << std::endl;
