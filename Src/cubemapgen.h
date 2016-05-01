@@ -66,7 +66,7 @@ typedef BaseImageSurface<4> NormalSurface;
 void FilterCubeSurfaces(
   const ImageSurface *a_SrcCubeMap,
   ImageSurface *a_DstCubeMap,
-  float a_FilterConeAngle = 0.0f,
+  float a_FilterConeAngle = 1.0f,
   int32_t a_FilterType = CP_FILTER_TYPE_COSINE_POWER,
   bool a_bUseSolidAngle = true,
   int32_t a_FaceIdxStart = 0,

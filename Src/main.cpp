@@ -126,6 +126,8 @@ void PrintUsage() {
   std::cout << "            filtered  : generate the filtered cubemap." << std::endl;
   std::cout << "            irradiance: generate the irradiance cubemap." << std::endl;
   std::cout << "            none      : generate the non filtered cubemap." << std::endl;
+  std::cout << " -a angle : A half of the filter corn angle. the default is 1.0." << std::endl;
+  std::cout << "            In general, when the mip level goes up one, it will double." << std::endl;
   std::cout << " [+-][xyz] left top right bottom:" << std::endl;
   std::cout << "            Set the source cubemap region." << std::endl;
   std::cout << "            The reagion is the rectangle of pixels." << std::endl;
@@ -375,6 +377,7 @@ int main(int argc, char** argv) {
   bool verbose = false;
   const char* infilename = nullptr;
   std::string outfilename;
+  float filterAngle = 1.0f;
   float strengthScale = 1.0f;
   Format outputFormat = FORMAT_PNG;
   ConversionMode conversionMode = CONVERSIONMODE_SINGLE;
@@ -426,10 +429,13 @@ int main(int argc, char** argv) {
 	  }
 	}
 	if (argv[i][0] == '-') {
-	  if (argv[i][1] == 's' || argv[i][1] == 'S' && (argc >= i + 1)) {
-		strengthScale = static_cast<float>(atof(argv[i + 1]));
+	  if ((argv[i][1] == 's' || argv[i][1] == 'S') && (argc >= i + 1)) {
+		strengthScale = std::max(0.0f, static_cast<float>(atof(argv[i + 1])));
 		++i;
-	  } else if (argv[i][1] == 'f' || argv[i][1] == 'F' && (argc >= i + 1)) {
+	  } else if ((argv[i][1] == 'a'|| argv[i][1] == 'A') && (argc >= i + 1)) {
+		filterAngle = std::max(0.0f, std::min(90.0f, static_cast<float>(atof(argv[i + 1]))));
+		++i;
+	  } else if ((argv[i][1] == 'f' || argv[i][1] == 'F') && (argc >= i + 1)) {
 		if (strcmp("png", argv[i + 1]) == 0) {
 		  outputFormat = FORMAT_PNG;
 		} else if (strcmp("tga", argv[i + 1]) == 0) {
@@ -440,7 +446,7 @@ int main(int argc, char** argv) {
 		  return RESULT_ERROR;
 		}
 		++i;
-	  } else if (argv[i][1] == 'c' && (argc >= i + 1)) {
+	  } else if ((argv[i][1] == 'c' || argv[i][1] == 'C') && (argc >= i + 1)) {
 		if (strcmp("filtered", argv[i + 1]) == 0) {
 		  conversionMode = CONVERSIONMODE_CUBEMAP_FILTERED;
 		} else if (strcmp("irradiance", argv[i + 1]) == 0) {
@@ -527,7 +533,7 @@ int main(int argc, char** argv) {
 	  switch (conversionMode) {
 	  default:
 	  case CONVERSIONMODE_CUBEMAP_FILTERED:
-		CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data());
+		CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data(), filterAngle);
 		break;
 	  case CONVERSIONMODE_CUBEMAP_IRRADIANCE:
 		CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemap.data());
