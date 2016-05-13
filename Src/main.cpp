@@ -14,7 +14,7 @@
 #include <array>
 #include <cassert>
 
-#define EXR2PNG_VERSION 1.2
+#define EXR2PNG_VERSION 1.3
 #define EXR2PNG_TO_STR_I(x) #x
 #define EXR2PNG_TO_STR(x) EXR2PNG_TO_STR_I(x)
 
@@ -64,6 +64,24 @@ ImageRectArray cubemapRectArray = { {
   { 256,   0, 512, 256, ImageDir_Left } // -Z
 } };
 
+/** Reduce the image rects.
+
+  @param array     The array of the image rect.
+  @param miplevel  A mipmap level of the reducion target.
+
+  @return The array of the image rect that was reduced.
+*/
+ImageRectArray Reduce(const ImageRectArray& array, int miplevel) {
+  ImageRectArray  ret = array;
+  for (auto& e : ret) {
+	e.left >>= (miplevel - 1);
+	e.top >>= (miplevel - 1);
+	e.right = std::max(1, e.right >> (miplevel - 1));
+	e.bottom = std::max(1, e.bottom >> (miplevel - 1));
+  }
+  return ret;
+}
+
 /** Read OpenEXR image from file.
 
   @param filename  OpenEXR file path.
@@ -103,6 +121,64 @@ Result ReadRgbaExrFile(const char* filename, Imf::Array2D<Imf::Rgba>* pPixels, i
   return RESULT_ERROR;
 }
 
+typedef Imf::Array2D<Imf::Rgba> ExrImage;
+
+Imf::Rgba Add(const Imf::Rgba& lhs, const Imf::Rgba& rhs) {
+  return Imf::Rgba(lhs.r + rhs.r, lhs.g + rhs.g, lhs.b + rhs.b, lhs.a + rhs.a);
+}
+
+Imf::Rgba Mul(const Imf::Rgba& lhs, float rhs) {
+  return Imf::Rgba(lhs.r * rhs, lhs.g * rhs, lhs.b * rhs, lhs.a * rhs);
+}
+
+/** Reduce EXR image to half.
+
+  @param source    The source image buffer.
+  @param dest      The destination image buffer.
+*/
+void ReduceExrImage2(const ExrImage& source, ExrImage& dest) {
+  const int sw = source.width();
+  const int sh = source.height();
+  const int dw = sw / 2;
+  const int dh = sh / 2;
+  dest.resizeEraseUnsafe(dh, dw);
+  for (int y = 0; y < dh; ++y) {
+	for (int x = 0; x < dw; ++x) {
+	  const int x2 = x * 2;
+	  const int y2 = y * 2;
+	  Imf::Rgba color = source[y2 + 0][x2 + 0];
+	  color = Add(color, source[y2 + 0][x2 + 1]);
+	  color = Add(color, source[y2 + 1][x2 + 0]);
+	  color = Add(color, source[y2 + 1][x2 + 1]);
+	  color = Mul(color, 1.0f / 4.0f);
+	  dest[y][x] = color;
+	}
+  }
+}
+
+/** Get an image of the miplevel.
+
+  @param source    The source image buffer.
+  @param miplevel  The miplevel.
+  @param dest      The destination image buffer.
+*/
+void ReduceExrImage(const ExrImage& source, int miplevel, ExrImage& dest) {
+  const int sw = source.width();
+  const int sh = source.height();
+  if (miplevel < 2 || sw == 1 || sh == 1) {
+	dest.resizeEraseUnsafe(sh, sw);
+	for (int y = 0; y < sh; ++y) {
+	  std::copy(source[y], source[y] + sw, dest[y]);
+	}
+  } else if (miplevel == 2) {
+	ReduceExrImage2(source, dest);
+  } else {
+	ExrImage tmp;
+	ReduceExrImage2(source, tmp);
+	ReduceExrImage(tmp, miplevel - 1, dest);
+  }
+}
+
 /*** Print program usage.
 */
 void PrintUsage() {
@@ -128,6 +204,8 @@ void PrintUsage() {
   std::cout << "            none      : generate the non filtered cubemap." << std::endl;
   std::cout << " -a angle : A half of the filter corn angle. the default is 1.0." << std::endl;
   std::cout << "            In general, when the mip level goes up one, it will double." << std::endl;
+  std::cout << " -m level : A mipmap level. It decides the reduction scale." << std::endl;
+  std::cout << "            An image is reduced to '1 / 2^(level - 1)'. The default is 1." << std::endl;
   std::cout << " [+-][xyz] left top right bottom:" << std::endl;
   std::cout << "            Set the source cubemap region." << std::endl;
   std::cout << "            The reagion is the rectangle of pixels." << std::endl;
@@ -379,6 +457,7 @@ int main(int argc, char** argv) {
   std::string outfilename;
   float filterAngle = 1.0f;
   float strengthScale = 1.0f;
+  int miplevel = 1;
   Format outputFormat = FORMAT_PNG;
   ConversionMode conversionMode = CONVERSIONMODE_SINGLE;
   for (int i = 1; i < argc; ++i) {
@@ -434,6 +513,9 @@ int main(int argc, char** argv) {
 		++i;
 	  } else if ((argv[i][1] == 'a'|| argv[i][1] == 'A') && (argc >= i + 1)) {
 		filterAngle = std::max(0.0f, std::min(90.0f, static_cast<float>(atof(argv[i + 1]))));
+		++i;
+	  } else if ((argv[i][1] == 'm' || argv[i][1] == 'm') && (argc >= i + 1)) {
+		miplevel = std::max(1, atoi(argv[i + 1]));
 		++i;
 	  } else if ((argv[i][1] == 'f' || argv[i][1] == 'F') && (argc >= i + 1)) {
 		if (strcmp("png", argv[i + 1]) == 0) {
@@ -525,7 +607,15 @@ int main(int argc, char** argv) {
 		return RESULT_ERROR;
 	  }
 
-	  CubeMapGen::CubemapImageSurface srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	  CubeMapGen::CubemapImageSurface srcCubemap;
+	  if (conversionMode == CONVERSIONMODE_CUBEMAP_FILTERED) {
+		ExrImage reducedPixels;
+		ReduceExrImage(pixels, miplevel, reducedPixels);
+		ImageRectArray  reducedRectArray = Reduce(cubemapRectArray, miplevel);
+		srcCubemap = CreateCubemapFromEXR(reducedPixels, reducedRectArray);
+	  } else {
+		srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	  }
 	  CubeMapGen::CubemapImageSurface destCubemap;
 	  for (auto& e : destCubemap) {
 		e.Init(srcCubemap[0].m_Width, srcCubemap[0].m_Height);
