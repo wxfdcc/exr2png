@@ -87,7 +87,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -103,7 +103,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
