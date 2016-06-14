@@ -14,7 +14,7 @@
 #include <array>
 #include <cassert>
 
-#define EXR2PNG_VERSION 1.3
+#define EXR2PNG_VERSION 1.4
 #define EXR2PNG_TO_STR_I(x) #x
 #define EXR2PNG_TO_STR(x) EXR2PNG_TO_STR_I(x)
 
