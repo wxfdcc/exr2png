@@ -638,8 +638,7 @@ void ProcessFilterExtents(
   float *a_DstVal,
   uint32_t a_FilterType,
   bool a_bUseSolidAngleWeighting,
-  float a_SpecularPower,
-  float a_BaseFilterAngle
+  float a_SpecularPower
 )
 {
   int32_t iFaceIdx, u, v;
@@ -765,7 +764,7 @@ void ProcessFilterExtents(
 	}
   } else // if (a_FilterType != CP_FILTER_TYPE_COSINE_POWER)
   {
-	float IsPhongBRDF = 1.0f; // This value will be added to the specular power
+	float IsPhongBRDF = 0.0f; //1.0f; // This value will be added to the specular power
 
 	for (iFaceIdx = 0; iFaceIdx < 6; iFaceIdx++) {
 	  uStart = a_FilterExtents[iFaceIdx].m_minCoord[0];
@@ -831,6 +830,37 @@ void ProcessFilterExtents(
 	for (k = 0; k < g_numChannels; k++) {
 	  a_DstVal[k] = texelPtr[k];
 	}
+  }
+}
+
+//--------------------------------------------------------------------------------------
+// Fixup cube edges
+//
+// average texels on cube map faces across the edges
+//--------------------------------------------------------------------------------------
+void FixupCubeEdges(ImageSurface *a_CubeMap, int32_t a_FixupWidth)
+{
+  // If there is no fixup, or fixup width = 0, do nothing.
+  // In case of Bent/Warp/Stretch Fixup and width of 1, we take the average of the texel color.
+  if ((a_FixupWidth == 0) || (a_CubeMap[0].m_Width != 1)) {
+	return;
+  }
+
+  //special case 1x1 cubemap, average face colors
+  if (a_CubeMap[0].m_Width == 1) {
+	//iterate over channels
+	const int nChannels = a_CubeMap->m_NumChannels;
+	for (int k = 0; k<nChannels; k++) {
+	  float accum = 0.0f;
+	  for (int iFace = 0; iFace<6; iFace++) {
+		accum += *(a_CubeMap[iFace].GetSurfacePtr() + k);
+	  }
+	  accum /= 6.0f;
+	  for (int iFace = 0; iFace<6; iFace++) {
+		*(a_CubeMap[iFace].GetSurfacePtr() + k) = accum;
+	  }
+	}
+	return;
   }
 }
 
@@ -930,15 +960,16 @@ void FilterCubeSurfaces(
 		  a_SrcCubeMap,
 		  texelPtr,
 		  a_FilterType,
-		  a_bUseSolidAngle
-		  , a_SpecularPower
-		  , 0.0f
+		  a_bUseSolidAngle,
+		  a_SpecularPower
 		);
 
 		texelPtr += a_DstCubeMap[iCubeFace].m_NumChannels;
 	  }
 	}
   }
+
+  FixupCubeEdges(a_DstCubeMap, 1);
 }
 
 // SH order use for approximation of irradiance cubemap is 5, mean 5*5 equals 25 coefficients
