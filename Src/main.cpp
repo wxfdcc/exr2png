@@ -653,7 +653,12 @@ int main(int argc, char** argv) {
 	  static const char* const postfixArray[] = { "_px", "_nx", "_py", "_ny", "_pz", "_nz" };
 	  for (int m = 0; m < miplevel; ++m) {
 		for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
-		  std::string filename = outfilename + static_cast<char>('1' + m) + postfixArray[i];
+		  std::string filename;
+		  if (conversionMode == CONVERSIONMODE_CUBEMAP_FILTERED) {
+			filename = outfilename + static_cast<char>('1' + m) + postfixArray[i];
+		  } else {
+			filename = outfilename + postfixArray[i];
+		  }
 		  if (outputFormat == FORMAT_PNG) {
 			filename += ".png";
 		  } else {
