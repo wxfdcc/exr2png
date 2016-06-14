@@ -18,6 +18,8 @@
 #define EXR2PNG_TO_STR_I(x) #x
 #define EXR2PNG_TO_STR(x) EXR2PNG_TO_STR_I(x)
 
+static const int maxMipLevels = 16;
+
 /** The result of the conversion.
 */
 enum Result {
@@ -56,12 +58,12 @@ struct ImageRect {
 
 typedef std::array<ImageRect, 6> ImageRectArray;
 ImageRectArray cubemapRectArray = { {
-  { 512,   0, 768, 256, ImageDir_Top }, // +X
+  { 256, 256, 512, 512, ImageDir_Left }, // +X
   {   0,   0, 256, 256, ImageDir_Top }, // -X
-  {   0, 256, 256, 512, ImageDir_Top }, // +Y
-  { 256, 256, 512, 512, ImageDir_Left }, // -Y
-  { 512, 256, 768, 512, ImageDir_Top }, // +Z
-  { 256,   0, 512, 256, ImageDir_Left } // -Z
+  {   0, 256, 256, 512, ImageDir_Left }, // +Y
+  { 512,   0, 768, 256, ImageDir_Bottom }, // -Y
+  { 256,   0, 512, 256, ImageDir_Top }, // +Z
+  { 512, 256, 768, 512, ImageDir_Left }, // -Z
 } };
 
 /** Reduce the image rects.
@@ -204,7 +206,7 @@ void PrintUsage() {
   std::cout << "            none      : generate the non filtered cubemap." << std::endl;
   std::cout << " -a angle : A half of the filter corn angle. the default is 1.0." << std::endl;
   std::cout << "            In general, when the mip level goes up one, it will double." << std::endl;
-  std::cout << " -m level : A mipmap level. It decides the reduction scale." << std::endl;
+  std::cout << " -m level : A maximum mipmap level. level number of texture is  generated." << std::endl;
   std::cout << "            An image is reduced to '1 / 2^(level - 1)'. The default is 1." << std::endl;
   std::cout << " [+-][xyz] left top right bottom:" << std::endl;
   std::cout << "            Set the source cubemap region." << std::endl;
@@ -515,7 +517,7 @@ int main(int argc, char** argv) {
 		filterAngle = std::max(0.0f, std::min(90.0f, static_cast<float>(atof(argv[i + 1]))));
 		++i;
 	  } else if ((argv[i][1] == 'm' || argv[i][1] == 'm') && (argc >= i + 1)) {
-		miplevel = std::max(1, atoi(argv[i + 1]));
+		miplevel = std::min(maxMipLevels, std::max(1, atoi(argv[i + 1])));
 		++i;
 	  } else if ((argv[i][1] == 'f' || argv[i][1] == 'F') && (argc >= i + 1)) {
 		if (strcmp("png", argv[i + 1]) == 0) {
@@ -607,42 +609,59 @@ int main(int argc, char** argv) {
 		return RESULT_ERROR;
 	  }
 
-	  CubeMapGen::CubemapImageSurface srcCubemap;
-	  if (conversionMode == CONVERSIONMODE_CUBEMAP_FILTERED) {
-		ExrImage reducedPixels;
-		ReduceExrImage(pixels, miplevel, reducedPixels);
-		ImageRectArray  reducedRectArray = Reduce(cubemapRectArray, miplevel);
-		srcCubemap = CreateCubemapFromEXR(reducedPixels, reducedRectArray);
-	  } else {
-		srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	  CubeMapGen::CubemapImageSurface srcCubemap = CreateCubemapFromEXR(pixels, cubemapRectArray);
+	  std::vector<CubeMapGen::CubemapImageSurface> destCubemapList;
+	  destCubemapList.resize(miplevel);
+	  int width = srcCubemap[0].m_Width;
+	  int height = srcCubemap[0].m_Height;
+	  for (auto& destCubemap : destCubemapList) {
+		for (auto& e : destCubemap) {
+		  e.Init(width, height);
+		}
+		width = std::max(1, width / 2);
+		height = std::max(1, height / 2);
 	  }
-	  CubeMapGen::CubemapImageSurface destCubemap;
-	  for (auto& e : destCubemap) {
-		e.Init(srcCubemap[0].m_Width, srcCubemap[0].m_Height);
-	  }
+	  float specularPower = 2048.0f;
 	  switch (conversionMode) {
 	  default:
-	  case CONVERSIONMODE_CUBEMAP_FILTERED:
-		CubeMapGen::FilterCubeSurfaces(srcCubemap.data(), destCubemap.data(), filterAngle);
+	  case CONVERSIONMODE_CUBEMAP_FILTERED: {
+		CubeMapGen::CubemapImageSurface* pSrc = &srcCubemap;
+		for (int i = 0; i < miplevel; ++i) {
+		  CubeMapGen::CubemapImageSurface* pDest = &destCubemapList[i];
+		  CubeMapGen::FilterCubeSurfaces(
+			pSrc->data(), pDest->data(),
+			filterAngle,
+			CubeMapGen::CP_FILTER_TYPE_COSINE_POWER,
+			true,
+			0, CubeMapGen::numberOfCubemapFaces - 1,
+			specularPower
+		  );
+		  filterAngle *= 2.0f;
+		  specularPower *= 0.25f;
+		  pSrc = pDest;
+		}
 		break;
+	  }
 	  case CONVERSIONMODE_CUBEMAP_IRRADIANCE:
-		CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemap.data());
+		CubeMapGen::SHFilterCubeMap(srcCubemap.data(), destCubemapList[0].data());
 		break;
 	  case CONVERSIONMODE_CUBEMAP_NONFILTERD:
-		destCubemap = srcCubemap;
+		destCubemapList[0] = srcCubemap;
 		break;
 	  }
 
 	  static const char* const postfixArray[] = { "_px", "_nx", "_py", "_ny", "_pz", "_nz" };
-	  for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
-		std::string filename = outfilename + postfixArray[i];
-		if (outputFormat == FORMAT_PNG) {
-		  filename += ".png";
-		} else {
-		  filename += ".tga";
-		}
-		if (WriteFile(destCubemap[i], destCubemap[i].m_Width, destCubemap[i].m_Height, strengthScale, filename, outputFormat) == RESULT_ERROR) {
-		  return RESULT_ERROR;
+	  for (int m = 0; m < miplevel; ++m) {
+		for (int i = 0; i < CubeMapGen::numberOfCubemapFaces; ++i) {
+		  std::string filename = outfilename + static_cast<char>('1' + m) + postfixArray[i];
+		  if (outputFormat == FORMAT_PNG) {
+			filename += ".png";
+		  } else {
+			filename += ".tga";
+		  }
+		  if (WriteFile(destCubemapList[m][i], destCubemapList[m][i].m_Width, destCubemapList[m][i].m_Height, strengthScale, filename, outputFormat) == RESULT_ERROR) {
+			return RESULT_ERROR;
+		  }
 		}
 	  }
 	}
