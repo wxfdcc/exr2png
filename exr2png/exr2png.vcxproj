@@ -22,32 +22,32 @@
     <ProjectGuid>{B04ADC10-94B0-474A-8902-A61553BE0EAF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>exr2png</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\IlmBase\include\OpenEXR;$(SolutionDir)\libpng\include;$(SolutionDir)\OpenEXR\include\OpenEXR;$(SolutionDir)\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,13 +105,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NOMINMAX;OPENEXR_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\include;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\include\OpenEXR;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\IlmBase\include\OpenEXR;$(SolutionDir)\libpng\include;$(SolutionDir)\OpenEXR\include\OpenEXR;$(SolutionDir)\zlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\IlmBase\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\libpng\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\OpenEXR\lib;C:\Users\tn_mai\Documents\Visual Studio 2015\Projects\exr2png\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\IlmBase\lib;$(SolutionDir)\libpng\lib;$(SolutionDir)\OpenEXR\lib;$(SolutionDir)\zlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Half.lib;Iex-2_2.lib;IexMath-2_2.lib;IlmThread-2_2.lib;Imath-2_2.lib;libpng16.lib;IlmImfd-2_2.lib;IlmImfUtild-2_2.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
